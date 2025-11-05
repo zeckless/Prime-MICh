@@ -1,0 +1,153 @@
+[gd_scene load_steps=4 format=3 uid="uid://baqg8h763s8qc"]
+
+[sub_resource type="GDScript" id="GDScript_ofh1d"]
+script/source = "extends Control
+
+var health_bar = null
+var health_label = null
+
+func _ready():
+	print(\"HealthBar UI inicializada\")
+	
+	# Usar las rutas directas como en el .tscn
+	health_bar = $HealthBar
+	health_label = $HealthLabel
+	
+	print(\"health_bar encontrada: \", health_bar)
+	print(\"health_label encontrada: \", health_label)
+	
+	# Verificar que las encontró
+	if health_bar:
+		print(\"✅ HealthBar encontrada correctamente\")
+		print(\"  Valor inicial: \", health_bar.value)
+		print(\"  Max value: \", health_bar.max_value)
+	else:
+		print(\"❌ HealthBar NO encontrada\")
+		
+	if health_label:
+		print(\"✅ HealthLabel encontrada correctamente\")
+		print(\"  Texto inicial: \", health_label.text)
+	else:
+		print(\"❌ HealthLabel NO encontrada\")
+
+# Función auxiliar para buscar todos los nodos
+func _find_all_nodes(node: Node, type_name: String, result_array: Array):
+	if node.get_class() == type_name:
+		result_array.append(node)
+	
+	for child in node.get_children():
+		_find_all_nodes(child, type_name, result_array)
+
+func update_health(current_health: float, max_health: float):
+	print(\"🔥 ACTUALIZANDO BARRA DE VIDA 🔥\")
+	print(\"Vida recibida: \", current_health, \"/\", max_health)
+	
+	# Verificar que el árbol esté disponible
+	if not get_tree() or not get_tree().current_scene:
+		print(\"⚠️ Árbol de nodos no disponible, usando método local MEJORADO\")
+		# Usar método local mejorado
+		if health_bar:
+			print(\"📊 ANTES local - Valor: \", health_bar.value, \" Max: \", health_bar.max_value)
+			health_bar.max_value = max_health
+			health_bar.value = current_health
+			health_bar.queue_redraw()
+			
+			# Forzar actualización del estilo
+			var fill_style = health_bar.get_theme_stylebox(\"fill\")
+			if fill_style:
+				if current_health <= 25:
+					fill_style.bg_color = Color.RED
+				elif current_health <= 50:
+					fill_style.bg_color = Color.YELLOW
+				else:
+					fill_style.bg_color = Color.GREEN
+				print(\"🎨 Color cambiado a: \", fill_style.bg_color)
+			
+			print(\"📊 DESPUÉS local - Valor: \", health_bar.value, \" Max: \", health_bar.max_value)
+		else:
+			print(\"❌ health_bar es null en método local\")
+			
+		if health_label:
+			var old_text = health_label.text
+			health_label.text = \"NUEVA VIDA: \" + str(int(current_health)) + \"/\" + str(int(max_health))
+			print(\"📝 Texto cambiado de '\", old_text, \"' a '\", health_label.text, \"'\")
+		else:
+			print(\"❌ health_label es null en método local\")
+		return
+	
+	# BUSCAR Y ACTUALIZAR TODOS LOS ELEMENTOS DE VIDA EN TODO EL JUEGO
+	var root_node = get_tree().current_scene
+	var all_labels = []
+	var all_bars = []
+	_find_all_nodes(root_node, \"Label\", all_labels)
+	_find_all_nodes(root_node, \"ProgressBar\", all_bars)
+	
+	print(\"Encontrados \", all_labels.size(), \" Labels y \", all_bars.size(), \" ProgressBars\")
+	
+	# Actualizar TODOS los labels que contengan \"Vida\"
+	for label in all_labels:
+		if \"Vida\" in label.text or \"vida\" in label.text or \"NUEVA VIDA\" in label.text:
+			print(\"🎯 Actualizando Label: \", label.name, \" de '\", label.text, \"' a 'NUEVA VIDA: \", current_health, \"/\", max_health, \"'\")
+			label.text = \"NUEVA VIDA: \" + str(int(current_health)) + \"/\" + str(int(max_health))
+	
+	# Actualizar TODAS las barras de progreso
+	for bar in all_bars:
+		print(\"🎯 Actualizando ProgressBar: \", bar.name, \" de \", bar.value, \" a \", current_health)
+		bar.max_value = max_health
+		bar.value = current_health
+		bar.queue_redraw()
+		
+		# Cambiar color
+		var fill_style = bar.get_theme_stylebox(\"fill\")
+		if fill_style:
+			if current_health <= 25:
+				fill_style.bg_color = Color.RED
+			elif current_health <= 50:
+				fill_style.bg_color = Color.YELLOW
+			else:
+				fill_style.bg_color = Color.GREEN
+	
+	print(\"✅ TODOS los elementos actualizados!\")
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
+bg_color = Color(0, 0.8, 0, 1)
+
+[node name="HealthUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_ofh1d")
+
+[node name="HealthLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = 150.0
+offset_bottom = -60.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 16
+text = "NUEVA VIDA: 100/100"
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -55.0
+offset_right = 220.0
+offset_bottom = -25.0
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_1")
+theme_override_styles/fill = SubResource("StyleBoxFlat_2")
+value = 100.0

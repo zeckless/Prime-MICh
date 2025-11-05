@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3 uid="uid://w1ilvdsrnpo0"]
+
+[ext_resource type="Script" uid="uid://1f8xnnfte60e" path="res://Scripts/pausa_menu.gd" id="1_qfjsl"]
+
+[node name="PausaMenuLayer" type="CanvasLayer"]
+
+[node name="PausaMenu" type="Control" parent="."]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qfjsl")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PausaMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -62.0
+offset_top = -81.5
+offset_right = 62.0
+offset_bottom = 81.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="PausaMenu/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Pausa"
+
+[node name="Button" type="Button" parent="PausaMenu/VBoxContainer"]
+layout_mode = 2
+text = "Continuar"
+
+[node name="Button2" type="Button" parent="PausaMenu/VBoxContainer"]
+layout_mode = 2
+text = "Reiniciar"
+
+[node name="Button3" type="Button" parent="PausaMenu/VBoxContainer"]
+layout_mode = 2
+text = "Menu Principal"
+
+[node name="Button4" type="Button" parent="PausaMenu/VBoxContainer"]
+layout_mode = 2
+text = "Salir"
+
+[connection signal="pressed" from="PausaMenu/VBoxContainer/Button" to="PausaMenu" method="_on_continuar_pressed"]
+[connection signal="pressed" from="PausaMenu/VBoxContainer/Button2" to="PausaMenu" method="_on_reiniciar_pressed"]
+[connection signal="pressed" from="PausaMenu/VBoxContainer/Button3" to="PausaMenu" method="_on_menu_principal_pressed"]
+[connection signal="pressed" from="PausaMenu/VBoxContainer/Button4" to="PausaMenu" method="_on_salir_pressed"]

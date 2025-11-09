@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://dlck51lams2kl"]
+
+[ext_resource type="Script" uid="uid://c4kxsxecbf82b" path="res://Scripts/hud.gd" id="1_e0onf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3gfia"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0onf"]
+bg_color = Color(0.14063668, 0.7226113, 0.11866889, 1)
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_e0onf")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer"]
+custom_minimum_size = Vector2(100, 10)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_3gfia")
+theme_override_styles/fill = SubResource("StyleBoxFlat_e0onf")
+step = 25.0
+value = 100.0
+show_percentage = false

@@ -1,7 +1,7 @@
 [gd_scene load_steps=21 format=3 uid="uid://b4hawts1qghp2"]
 
 [ext_resource type="Script" uid="uid://cm1jaw84kdllx" path="res://Scripts/player.gd" id="1_kyqiw"]
-[ext_resource type="Texture2D" uid="uid://bq2o1roxb26v0" path="res://Midnight Forest/Midnight Forest/characters/explorer/explorer.png" id="1_rpqav"]
+[ext_resource type="Texture2D" uid="uid://bq2o1roxb26v0" path="res://assets/Midnight Forest/Midnight Forest/characters/explorer/explorer.png" id="1_rpqav"]
 [ext_resource type="AudioStream" uid="uid://bqrgoko1e1xek" path="res://MusicaYSonido/Sonidos/drop_001.ogg" id="3_dewec"]
 [ext_resource type="AudioStream" uid="uid://mql6l4lrxnna" path="res://MusicaYSonido/Sonidos/error_004.ogg" id="3_gntrk"]
 [ext_resource type="AudioStream" uid="uid://bdfmunvhafehl" path="res://MusicaYSonido/Sonidos/toggle_004.ogg" id="5_5ixxa"]

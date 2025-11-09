@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://cck8dgd1pfudr"]
 
 [ext_resource type="Script" uid="uid://r6tl4bg23188" path="res://Scripts/enemy.gd" id="1_1f0kj"]
-[ext_resource type="Texture2D" uid="uid://c367uj8ki4vsn" path="res://Midnight Forest/Midnight Forest/characters/cultist-executioner/cultist-executioner.png" id="1_hghv2"]
+[ext_resource type="Texture2D" uid="uid://c367uj8ki4vsn" path="res://assets/Midnight Forest/Midnight Forest/characters/cultist-executioner/cultist-executioner.png" id="1_hghv2"]
 
 [sub_resource type="Animation" id="Animation_afpow"]
 length = 0.001

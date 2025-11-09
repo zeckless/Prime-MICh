@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c2kbkt7lxd4uk"]
 
 [ext_resource type="Script" uid="uid://chfs6xd1wnc0" path="res://Scripts/main_menu.gd" id="1_tt5f1"]
-[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="2_853f1"]
+[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://assets/Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="2_853f1"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3

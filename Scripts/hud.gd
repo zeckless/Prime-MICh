@@ -24,6 +24,32 @@ func setup(health_component: HealthComponent = null, weight_component: WeightCom
 func _on_health_changed(value):
 	if is_instance_valid(health_bar):
 		health_bar.value = value
+		_update_health_bar_color(value)
 		print("🎯 Vida actualizada en pantalla: ", value)
 	else:
 		print("❌ Error: La barra de vida no existe")
+
+func _update_health_bar_color(health_value: float):
+	if not health_bar:
+		return
+		
+	var health_percent = health_value / health_bar.max_value
+	var style = StyleBoxFlat.new()
+	
+	# Configurar esquinas redondeadas
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_right = 4
+	style.corner_radius_bottom_left = 4
+	
+	# Determinar color basado en el porcentaje de vida
+	if health_percent > 0.7: # 70-100% - Verde
+		style.bg_color = Color(0.0, 0.8, 0.0)  # Verde brillante
+	elif health_percent > 0.4: # 40-70% - Amarillo
+		style.bg_color = Color(0.9, 0.9, 0.0)  # Amarillo
+	elif health_percent > 0.2: # 20-40% - Naranja
+		style.bg_color = Color(1.0, 0.5, 0.0)  # Naranja
+	else: # 0-20% - Rojo
+		style.bg_color = Color(1.0, 0.0, 0.0)  # Rojo
+	
+	health_bar.add_theme_stylebox_override("fill", style)

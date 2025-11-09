@@ -16,7 +16,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="HUDpeso" type="CanvasLayer"]
+[node name="HUDpeso" type="CanvasLayer" groups=["hud"]]
 script = ExtResource("1_qvlvi")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

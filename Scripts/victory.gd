@@ -2,6 +2,10 @@ extends CanvasLayer
 
 func _ready():
 	get_tree().paused = true
+	# Ocultar todos los HUDs cuando aparece la pantalla de victoria
+	for hud in get_tree().get_nodes_in_group("hud"):
+		hud.hide()
+	
 	$CenterContainer/VBoxContainer/NextLevelButton.pressed.connect(_on_next_level_pressed)
 	$CenterContainer/VBoxContainer/MenuButton.pressed.connect(_on_menu_pressed)
 

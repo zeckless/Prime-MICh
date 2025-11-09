@@ -1,11 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://c6ngcl1r27jus"]
+[gd_scene load_steps=4 format=3 uid="uid://c6ngcl1r27jus"]
 
 [ext_resource type="Script" uid="uid://735jww1spaqk" path="res://Scripts/game_over.gd" id="1_1"]
 [ext_resource type="FontFile" uid="uid://cq58o7phqedpy" path="res://Daydream DEMO.otf" id="2_8fo1c"]
+[ext_resource type="Texture2D" uid="uid://b46wbs5rxk33m" path="res://assets/Gothic-Castle-Files/PNG/fondo1.jpg" id="3_kw2m3"]
 
 [node name="GameOver" type="CanvasLayer"]
 process_mode = 3
 script = ExtResource("1_1")
+
+[node name="Fondo1" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(481.62503, 273.62503)
+scale = Vector2(0.30023444, 0.29840955)
+texture = ExtResource("3_kw2m3")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchors_preset = 15

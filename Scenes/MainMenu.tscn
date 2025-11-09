@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://c2kbkt7lxd4uk"]
+[gd_scene load_steps=5 format=3 uid="uid://c2kbkt7lxd4uk"]
 
 [ext_resource type="Script" uid="uid://chfs6xd1wnc0" path="res://Scripts/main_menu.gd" id="1_tt5f1"]
-[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://assets/Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="2_853f1"]
+[ext_resource type="FontFile" uid="uid://cq58o7phqedpy" path="res://Daydream DEMO.otf" id="2_8saeu"]
+[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="2_853f1"]
+[ext_resource type="Texture2D" uid="uid://b46wbs5rxk33m" path="res://assets/Gothic-Castle-Files/PNG/fondo1.jpg" id="4_ghw46"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -28,25 +30,38 @@ grow_vertical = 2
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-text = " TWISTED BRANCHES"
+theme_override_fonts/font = ExtResource("2_8saeu")
+theme_override_font_sizes/font_size = 31
+text = "Prime Weight"
 
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_8saeu")
+theme_override_font_sizes/font_size = 16
 text = "Jugar"
 
 [node name="Button2" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "Créditos"
+theme_override_fonts/font = ExtResource("2_8saeu")
+text = "Creditos"
 
 [node name="Button3" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_8saeu")
 text = "Salir"
 
 [node name="Background-layer-3" type="Sprite2D" parent="."]
+visible = false
 z_index = -1
-position = Vector2(479, 269)
-scale = Vector2(2.98125, 3)
+position = Vector2(479.00003, 269)
+scale = Vector2(2.9812503, 3.0000002)
 texture = ExtResource("2_853f1")
+
+[node name="Fondo1" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(481.62503, 273.62503)
+scale = Vector2(0.30023444, 0.29840955)
+texture = ExtResource("4_ghw46")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_button_2_pressed"]

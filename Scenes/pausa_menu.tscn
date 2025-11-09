@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://w1ilvdsrnpo0"]
+[gd_scene load_steps=3 format=3 uid="uid://w1ilvdsrnpo0"]
 
 [ext_resource type="Script" uid="uid://1f8xnnfte60e" path="res://Scripts/pausa_menu.gd" id="1_qfjsl"]
+[ext_resource type="FontFile" uid="uid://cq58o7phqedpy" path="res://Daydream DEMO.otf" id="2_rq5c3"]
 
 [node name="PausaMenuLayer" type="CanvasLayer"]
 
@@ -37,22 +38,27 @@ grow_vertical = 2
 [node name="Label" type="Label" parent="PausaMenu/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_rq5c3")
 text = "Pausa"
 
 [node name="Button" type="Button" parent="PausaMenu/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rq5c3")
 text = "Continuar"
 
 [node name="Button2" type="Button" parent="PausaMenu/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rq5c3")
 text = "Reiniciar"
 
 [node name="Button3" type="Button" parent="PausaMenu/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rq5c3")
 text = "Menu Principal"
 
 [node name="Button4" type="Button" parent="PausaMenu/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rq5c3")
 text = "Salir"
 
 [connection signal="pressed" from="PausaMenu/VBoxContainer/Button" to="PausaMenu" method="_on_continuar_pressed"]

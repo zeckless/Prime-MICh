@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://mpggk44aw7su"]
+[gd_scene load_steps=5 format=3 uid="uid://mpggk44aw7su"]
 
 [ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://assets/Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="1_eml6v"]
 [ext_resource type="Script" uid="uid://cnje0q0no8kow" path="res://Scripts/creditos.gd" id="1_ompal"]
 [ext_resource type="AudioStream" uid="uid://twx51rdvsnky" path="res://MusicaYSonido/Musica/15 - Credit Theme.ogg" id="3_ompal"]
+[ext_resource type="Texture2D" uid="uid://b46wbs5rxk33m" path="res://assets/Gothic-Castle-Files/PNG/fondo1.jpg" id="4_lpe7s"]
 
 [node name="Creditos" type="Control"]
 layout_mode = 3
@@ -12,6 +13,8 @@ offset_bottom = 40.0
 script = ExtResource("1_ompal")
 
 [node name="Background-layer-3" type="Sprite2D" parent="."]
+visible = false
+z_index = -1
 position = Vector2(481.75, 268.5)
 scale = Vector2(3.00781, 3.06111)
 texture = ExtResource("1_eml6v")
@@ -24,14 +27,15 @@ offset_bottom = 40.0
 [node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
-text = "Twisted Branches
+text = "Prime Weight
 
-Developer:
-zeckless
+Desarrollado por:
+Equipo Prime MICh
 
 Game Assets:
 Midnight Forest by Archon Aspect
 https://archon-aspect.itch.io/midnight-forest
+Gothic Castle Files
 
 Sound Effects:
 Kenney.nl
@@ -47,5 +51,11 @@ text = "MENU"
 stream = ExtResource("3_ompal")
 volume_db = -24.0
 autoplay = true
+
+[node name="Fondo1" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(481.00006, 270)
+scale = Vector2(0.30062503, 0.30245534)
+texture = ExtResource("4_lpe7s")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://c6ngcl1r27jus"]
 
-[ext_resource type="Script" path="res://Scripts/game_over.gd" id="1_1"]
+[ext_resource type="Script" uid="uid://735jww1spaqk" path="res://Scripts/game_over.gd" id="1_1"]
+[ext_resource type="FontFile" uid="uid://cq58o7phqedpy" path="res://Daydream DEMO.otf" id="2_8fo1c"]
 
 [node name="GameOver" type="CanvasLayer"]
 process_mode = 3
@@ -27,6 +28,7 @@ theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_8fo1c")
 theme_override_font_sizes/font_size = 64
 text = "DERROTA!"
 horizontal_alignment = 1
@@ -34,9 +36,11 @@ horizontal_alignment = 1
 [node name="RestartButton" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_8fo1c")
 text = "Reintentar"
 
 [node name="MenuButton" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
-text = "Menú Principal"
+theme_override_fonts/font = ExtResource("2_8fo1c")
+text = "Menu Principal"

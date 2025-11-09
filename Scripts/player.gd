@@ -128,6 +128,9 @@ func take_damage(damage_amount):
 
 # FUNCIÓN LLAMADA CUANDO EL COMPONENTE EMITE LA SEÑAL DE MUERTE
 func _on_died():
+	is_dead = true
+	var game_over_scene = preload("res://Scenes/game_over.tscn").instantiate()
+	add_child(game_over_scene)
 	die()
 
 func flash_damage_effect():

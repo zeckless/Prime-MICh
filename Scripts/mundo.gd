@@ -57,7 +57,5 @@ func create_test_objects():
 	print("- Objeto rojo (peso 80): Él te atrae a ti")
 
 func _process(_delta):
-	if not ending and get_tree().get_nodes_in_group("enemy").size() == 0:
-		ending = true
-		await get_tree().create_timer(2.0).timeout  # Espera 1 segundo
-		get_tree().change_scene_to_file("res://Scenes/creditos.tscn")
+	# Removida la transición automática a créditos
+	pass

@@ -10,11 +10,11 @@ signal weight_changed(value)
 		print("🔥 WeightComponent - Peso cambiado: ", old_weight, " → ", weight, "kg")
 		weight_changed.emit(weight)
 
-@export var min_weight: float = 25.0  # Cambiado de 10.0 a 25.0
+@export var min_weight: float = 37.0  # Peso mínimo ajustado a 37kg
 @export var max_weight: float = 100.0
 
-var weight_levels = [25.0, 37.5, 50.0, 75.0, 100.0]  # Ajustado para empezar en 25kg
-var current_weight_index = 2  # Empezar en 50kg
+var weight_levels = [37.0, 50.0, 75.0, 100.0]  # Nuevos niveles de peso
+var current_weight_index = 0  # Empezar en 37kg
 
 func change_to_next_level():
 	# Verificar si ya estamos en el nivel máximo

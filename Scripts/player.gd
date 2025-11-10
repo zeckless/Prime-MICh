@@ -6,11 +6,11 @@ const jumpHeight = -300
 const gravity = 15
 
 # Sistema de peso dinámico mejorado
-var current_weight = 50.0  # Empezar con 50kg
-var weight_levels = [10.0, 25.0, 50.0, 75.0, 100.0]  # Niveles de peso
-var current_weight_index = 2  # Índice actual en weight_levels (2 = 50kg)
-var min_weight = 10.0      # Peso mínimo 
-var max_weight = 100.0     # Peso máximo 
+var current_weight = 37.0  # Empezar con 37kg
+var weight_levels = [37.0, 50.0, 75.0, 100.0]  # Niveles de peso actualizados
+var current_weight_index = 0  # Índice actual en weight_levels (0 = 37kg)
+var min_weight = 37.0      # Peso mínimo actualizado
+var max_weight = 100.0     # Peso máximo
 var weight_change_speed = 10.0  # Velocidad de cambio de peso
 
 # Detección de objetos
@@ -220,6 +220,11 @@ func start_pull_interaction():
 	var object_weight = selected_object.get_weight()
 	print("¡INICIANDO PULL! Peso jugador: ", current_weight, " vs Peso objeto: ", object_weight)
 	
+	# Verificar si el jugador tiene suficiente peso
+	if current_weight <= object_weight:
+		print("El objeto es demasiado pesado para tirar de él")
+		return
+		
 	pull_target = selected_object
 	start_pulling_animation()
 
@@ -244,6 +249,11 @@ func start_push_interaction():
 	var object_weight = selected_object.get_weight()
 	print("¡INICIANDO PUSH! Peso jugador: ", current_weight, " vs Peso objeto: ", object_weight)
 	
+	# Verificar si el jugador tiene suficiente peso
+	if current_weight <= object_weight:
+		print("El objeto es demasiado pesado para empujar")
+		return
+		
 	push_target = selected_object
 	start_pushing_animation()
 

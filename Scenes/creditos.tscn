@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://mpggk44aw7su"]
 
-[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="1_eml6v"]
+[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://assets/Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="1_eml6v"]
 [ext_resource type="Script" uid="uid://cnje0q0no8kow" path="res://Scripts/creditos.gd" id="1_ompal"]
 [ext_resource type="AudioStream" uid="uid://twx51rdvsnky" path="res://MusicaYSonido/Musica/15 - Credit Theme.ogg" id="3_ompal"]
 [ext_resource type="Texture2D" uid="uid://b46wbs5rxk33m" path="res://assets/Gothic-Castle-Files/PNG/fondo1.jpg" id="4_lpe7s"]

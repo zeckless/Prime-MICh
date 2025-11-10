@@ -1,7 +1,7 @@
 extends RigidBody2D
 class_name InteractableObject
 
-@export var object_weight: float = 15.0  
+@export var object_weight: float = 45.0  # Peso mayor al inicial del jugador (37kg)
 @export var max_force_multiplier: float = 3.0  # Muy reducido para movimiento suave
 
 func _ready():

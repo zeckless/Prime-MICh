@@ -35,14 +35,22 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/background = SubResource("StyleBoxFlat_y140s")
 theme_override_styles/fill = SubResource("StyleBoxFlat_qvlvi")
+min_value = 37.0
 step = 1.0
-value = 50.0
+value = 37.0
 show_percentage = false
 
 [node name="WeightLabel" type="Label" parent="MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 14
+text = "37kg"
+vertical_alignment = 1
+
+[node name="WeightLabel2" type="Label" parent="MarginContainer"]
+layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 
-[node name="WeightLabel2" type="Label" parent="MarginContainer"]
+[node name="WeightLabel3" type="Label" parent="MarginContainer"]
 layout_mode = 2

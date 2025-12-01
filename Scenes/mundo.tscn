@@ -3321,7 +3321,7 @@ object_weight = 70.0
 [node name="RigidBody2D4" parent="." instance=ExtResource("13_6bs12")]
 position = Vector2(1408.2117, -430.23236)
 scale = Vector2(1.0686681, 1)
-object_weight = 30.0
+object_weight = 90.0
 
 [node name="VictoryZone" parent="." instance=ExtResource("17_hppdt")]
 position = Vector2(1963.172, -383.56696)

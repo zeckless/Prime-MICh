@@ -20,9 +20,9 @@ const RECOIL_DRAG = 3.0      # (Antes 2.0) Un poco más de resistencia al aire
 const RECOIL_GRAVITY = 0.45  # (Antes 0.3) Un poco más de gravedad para no flotar tanto
 
 # --- SISTEMA DE PESO ---
-var current_weight = 37.0 
+var current_weight = 50.0  # <--- CAMBIO: Valor inicial 50
 var weight_levels = [37.0, 50.0, 75.0, 100.0]
-var current_weight_index = 0
+var current_weight_index = 1 # <--- CAMBIO: Ahora empieza en el índice 1 (50kg)
 var max_weight = 100.0
 
 # --- INTERACCIÓN ---

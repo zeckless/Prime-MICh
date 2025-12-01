@@ -654,3 +654,7 @@ script = ExtResource("8_megsn")
 script = ExtResource("9_megsn")
 
 [node name="HUDpeso" parent="." instance=ExtResource("10_yoq75")]
+
+[node name="Line2D" type="Line2D" parent="."]
+z_index = 1
+width = 1.0

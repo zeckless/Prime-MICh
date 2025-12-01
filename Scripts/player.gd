@@ -8,14 +8,16 @@ const JUMP_HEIGHT = -300.0
 const GRAVITY = 15.0
 
 # --- CONFIGURACIÓN DEL DASH ---
-const DASH_SPEED = 700.0  
+const DASH_SPEED = 350.0  
 const DASH_STOP_DISTANCE = 25.0 
 const MIN_DASH_TIME = 0.5 
 
-# --- CONFIGURACIÓN DEL REBOTE (NUEVO) ---
-const RECOIL_SPEED = 400.0   # Velocidad hacia atrás
-const RECOIL_JUMP = -250.0   # Un pequeño salto para el "airspin"
-const RECOIL_DURATION = 0.4  # Cuánto tiempo dura el descontrol
+# --- CONFIGURACIÓN DEL REBOTE (MODO VUELO - AJUSTADO) ---
+const RECOIL_SPEED = 280.0   # (Antes 300) Un pelín más lento
+const RECOIL_JUMP = -200.0   # (Antes -220) Salto un poco más controlado
+const RECOIL_DURATION = 0.4  
+const RECOIL_DRAG = 3.0      # (Antes 2.0) Un poco más de resistencia al aire
+const RECOIL_GRAVITY = 0.45  # (Antes 0.3) Un poco más de gravedad para no flotar tanto
 
 # --- SISTEMA DE PESO ---
 var current_weight = 37.0 
@@ -24,7 +26,7 @@ var current_weight_index = 0
 var max_weight = 100.0
 
 # --- INTERACCIÓN ---
-var detection_radius = 400.0 
+var detection_radius = 200.0 
 var nearby_objects = []
 var selected_object = null
 
@@ -34,13 +36,14 @@ var facing_right = true
 var is_pulling = false
 var is_pushing = false
 var is_dashing = false 
-var is_recoiling = false # NUEVO ESTADO: Retrocediendo/Rebotando
+var is_recoiling = false 
 var action_target = null 
 var current_dash_timer = 0.0 
-var current_recoil_timer = 0.0 # NUEVO TIMER
+var current_recoil_timer = 0.0 
 
 # --- REFERENCIAS ---
 @onready var anim_sprite = $AnimatedSprite2D 
+@onready var line_2d = $Line2D 
 @onready var pause_menu_scene = preload("res://Scenes/pausa_menu.tscn")
 @onready var hud: CanvasLayer = $HUD
 @onready var hudpeso: CanvasLayer = $HUDpeso
@@ -72,19 +75,19 @@ func _process(_delta):
 func _physics_process(delta):
 	if is_dead: return
 
-	# 1. LÓGICA DE REBOTE / RECOIL (NUEVA PRIORIDAD)
+	# 1. REBOTE 
 	if is_recoiling:
 		process_recoil_physics(delta)
 		move_and_slide()
-		return # Cortamos aquí, el jugador no tiene control mientras rebota
+		return 
 
-	# 2. LÓGICA DE DASH
+	# 2. DASH
 	if is_dashing:
 		process_dash_physics(delta)
 		move_and_slide()
 		return 
 
-	# 3. LÓGICA DE FUERZAS SOBRE OBJETOS
+	# 3. FÍSICA OBJETOS
 	if is_instance_valid(action_target):
 		if is_pulling:
 			process_object_pull(delta)
@@ -99,23 +102,25 @@ func _physics_process(delta):
 	move_and_slide()
 	handle_collisions()
 	
-	# 5. ACTUALIZAR ANIMACIONES
+	# 5. ANIMACIONES Y VISUALES
 	update_animations()
+	update_visual_feedback()
 
 # ================================================================
-# LÓGICA DE REBOTE / RECOIL (NUEVO)
+# LÓGICA DE REBOTE (AJUSTADA)
 # ================================================================
 func process_recoil_physics(delta):
-	# Contamos el tiempo
 	current_recoil_timer += delta
 	
-	# Aplicamos gravedad durante el rebote para que caiga natural
-	velocity.y += GRAVITY * delta * 50.0 # Gravedad un poco ajustada para que no flote
+	# Gravedad reducida (pero no tanto como antes)
+	velocity.y += (GRAVITY * RECOIL_GRAVITY) * delta * 50.0 
 	
-	# Si se acabó el tiempo, volvemos a la normalidad
+	# Fricción para frenar el vuelo
+	velocity.x = lerp(velocity.x, 0.0, RECOIL_DRAG * delta)
+	
 	if current_recoil_timer > RECOIL_DURATION:
 		stop_all_interactions()
-		velocity.x = 0 # Frenamos el movimiento horizontal al caer
+		# Dejamos algo de inercia, pero ya está más frenada por el Drag
 		print("✅ Rebote terminado")
 
 # ================================================================
@@ -200,9 +205,8 @@ func handle_movement_input():
 # ANIMACIONES
 # ================================================================
 func update_animations():
-	# Bloqueos de animaciones especiales
 	if is_dashing: return
-	if is_recoiling: return # airspin ya se está reproduciendo
+	if is_recoiling: return 
 
 	var anim = "idle" 
 	if is_dead:
@@ -226,24 +230,24 @@ func play_anim(anim_name):
 			anim_sprite.play(anim_name)
 
 # ================================================================
-# INPUTS
+# INPUTS (MOUSE)
 # ================================================================
 
 func _input(event):
-	if not event is InputEventKey or is_dead: return
+	if is_dead: return 
 	
 	if event.is_action_pressed("ui_cancel"):
 		var pause_menu = pause_menu_scene.instantiate()
 		get_tree().current_scene.add_child(pause_menu)
 		get_tree().paused = true
 
-	# TECLA F
-	if event.is_action_pressed("interact"):
+	# CLICK IZQUIERDO: PULL / DASH
+	if event.is_action_pressed("pull"):
 		start_pull_or_dash()
-	elif event.is_action_released("interact"):
+	elif event.is_action_released("pull"):
 		stop_all_interactions()
 	
-	# TECLA G
+	# CLICK DERECHO: PUSH / REBOTE
 	if event.is_action_pressed("push"):
 		start_push()
 	elif event.is_action_released("push"):
@@ -264,58 +268,82 @@ func start_pull_or_dash():
 		is_dashing = true
 		current_dash_timer = 0.0 
 		play_anim("dash")
-		print("🚀 DASH INICIADO")
 
 func start_push():
-	if is_pulling or is_dashing or is_recoiling or not is_on_floor() or not is_instance_valid(selected_object): return
+	if is_pulling or is_dashing or is_recoiling or not is_instance_valid(selected_object): return
+	
 	var obj_weight = selected_object.get_weight() if selected_object.has_method("get_weight") else 50.0
 	action_target = selected_object
 	
-	# --- LÓGICA DE REBOTE (PUSH BACK) ---
+	# REBOTE
 	if current_weight <= obj_weight: 
-		print("🔙 Objeto muy pesado -> ¡REBOTE!")
-		start_recoil() # Llamamos a la nueva función
+		start_recoil() 
 		return
-	# ------------------------------------
 
-	is_pushing = true
+	# EMPUJE
+	if is_on_floor():
+		is_pushing = true
+	else:
+		print("⚠️ No puedes empujar en el aire")
+		action_target = null 
 
-# NUEVA FUNCIÓN PARA INICIAR EL REBOTE
 func start_recoil():
 	is_recoiling = true
 	current_recoil_timer = 0.0
 	
-	# Dirección opuesta al objeto
 	var direction_to_obj = (action_target.global_position - global_position).normalized()
 	var recoil_dir = -direction_to_obj.x 
 	if recoil_dir == 0: recoil_dir = -1.0 if facing_right else 1.0
 	
-	# Aplicar física de rebote
 	velocity = Vector2(sign(recoil_dir) * RECOIL_SPEED, RECOIL_JUMP)
-	
-	# --- CORRECCIÓN DE ANIMACIÓN ---
-	# Verificamos si existe "airspin". Si no, usamos "jump" para que no se vea raro.
-	if anim_sprite.sprite_frames.has_animation("airspin"):
-		anim_sprite.play("airspin")
-		print("🌪️ Reproduciendo airspin")
-	else:
-		anim_sprite.play("jump")
-		print("⚠️ ALERTA: No existe la animación 'airspin'. Usando 'jump' por mientras.")
+	anim_sprite.play("airspin") 
 
 func stop_all_interactions():
 	is_pulling = false
 	is_pushing = false
 	is_dashing = false
-	is_recoiling = false # Reseteamos el estado
+	is_recoiling = false
 	action_target = null
 	current_dash_timer = 0.0
 	current_recoil_timer = 0.0
 
 # ================================================================
-# UTILIDADES
+# VISUALES
 # ================================================================
-# (El resto de las utilidades sigue igual, no hace falta cambiarlas)
-# Solo asegúrate de copiar hasta el final del archivo anterior
+
+func update_visual_feedback():
+	if not line_2d: return
+	if not is_instance_valid(selected_object):
+		line_2d.visible = false
+		return
+	
+	line_2d.visible = true
+	line_2d.clear_points()
+	line_2d.add_point(Vector2.ZERO) 
+	line_2d.add_point(to_local(selected_object.global_position))
+	
+	var obj_weight = selected_object.get_weight() if selected_object.has_method("get_weight") else 50.0
+	
+	var col_pull = Color.GREEN_YELLOW 
+	var col_dash = Color.CYAN         
+	var col_push = Color.ORANGE       
+	var col_fail = Color.RED          
+	
+	if current_weight > obj_weight:
+		line_2d.default_color = col_pull
+		line_2d.width = 1.0 
+	else:
+		line_2d.default_color = col_dash
+		line_2d.width = 2.0 
+	
+	if is_pushing:
+		line_2d.default_color = col_push
+	elif is_recoiling:
+		line_2d.default_color = col_fail
+
+# ... (El resto de funciones auxiliares change_weight_level, handle_collisions, etc.)
+# CÓPIALAS DEL SCRIPT ANTERIOR SI LAS TIENES SEPARADAS O MANTENLAS COMO ESTABAN.
+# (Asegúrate de no dejarlas fuera)
 func change_weight_level():
 	if weight_component:
 		weight_component.change_to_next_level()

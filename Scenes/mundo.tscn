@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://bp85srfprjo2i"]
+[gd_scene load_steps=34 format=3 uid="uid://bp85srfprjo2i"]
 
 [ext_resource type="Texture2D" uid="uid://dbxsngidy5bfc" path="res://assets/Midnight Forest/Midnight Forest/environment/terrain/terrain.png" id="1_4cw5y"]
 [ext_resource type="Script" uid="uid://dsyjipyftpgmo" path="res://Scripts/mundo.gd" id="1_7j6if"]
@@ -16,11 +16,12 @@
 [ext_resource type="Texture2D" uid="uid://r616xvk5yuan" path="res://assets/mist-forest-background/layers/mist-forest-background-back-trees.png" id="9_btko3"]
 [ext_resource type="Texture2D" uid="uid://dwiyxrssqrqnx" path="res://assets/Gothic-Castle-Files/PNG/layers/gothic-castle-background.png" id="9_rr27p"]
 [ext_resource type="Texture2D" uid="uid://c7dlqc2fhoad7" path="res://assets/Midnight Forest/Midnight Forest/environment/cult decors/banners/banners.png" id="10_has1v"]
-[ext_resource type="Texture2D" uid="uid://deb4c8qkrnoyh" path="res://assets/Midnight Forest/Midnight Forest/environment/cult decors/skull on pike/skull-on-pike.png" id="11_1bodn"]
 [ext_resource type="Texture2D" uid="uid://c742b73c741v5" path="res://assets/Midnight Forest/Midnight Forest/environment/lantern post/lantern-post.png" id="12_6bs12"]
 [ext_resource type="PackedScene" uid="uid://b5ua0y7siac5v" path="res://Scenes/objeto.tscn" id="13_6bs12"]
 [ext_resource type="Texture2D" uid="uid://dwbtbb86355sr" path="res://assets/mist-forest-background/layers/mist-forest-background-back.png" id="14_27nup"]
 [ext_resource type="PackedScene" path="res://Scenes/victory_zone.tscn" id="17_hppdt"]
+[ext_resource type="PackedScene" uid="uid://3dlg6y5u5anm" path="res://Scenes/death_zone.tscn" id="21_27nup"]
+[ext_resource type="Script" uid="uid://c5safikebvjgr" path="res://Scripts/death_zone.gd" id="23_r6gbd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i8avv"]
 texture = ExtResource("3_qxsm7")
@@ -3297,28 +3298,34 @@ position = Vector2(499.4642, -13.658171)
 position = Vector2(269, -34)
 texture = ExtResource("10_has1v")
 
-[node name="Skull-on-pike" type="Sprite2D" parent="."]
-position = Vector2(343, 35)
-texture = ExtResource("11_1bodn")
-
-[node name="RigidBody2D" parent="." instance=ExtResource("13_6bs12")]
-position = Vector2(3.4685016, -6.8290854)
+[node name="RigidBody2D5" parent="." instance=ExtResource("13_6bs12")]
+position = Vector2(896.02954, -14.796351)
 scale = Vector2(1.0686681, 1)
+object_weight = 95.0
+
+[node name="RigidBody2D6" parent="." instance=ExtResource("13_6bs12")]
+position = Vector2(896.02954, -40.97451)
+scale = Vector2(1.0686681, 1)
+object_weight = 95.0
 
 [node name="RigidBody2D2" parent="." instance=ExtResource("13_6bs12")]
-position = Vector2(1046.3312, -6.829085)
+position = Vector2(1045.1752, -11.381808)
 scale = Vector2(1.0686681, 1)
-object_weight = 30.0
+object_weight = 47.0
 
 [node name="RigidBody2D3" parent="." instance=ExtResource("13_6bs12")]
-position = Vector2(1462.5515, -136.58171)
+position = Vector2(1457.9268, -142.27261)
 scale = Vector2(1.0686681, 1)
-object_weight = 30.0
+object_weight = 70.0
 
 [node name="RigidBody2D4" parent="." instance=ExtResource("13_6bs12")]
-position = Vector2(1397.806, -359.66516)
+position = Vector2(1392.0254, -366.49423)
 scale = Vector2(1.0686681, 1)
 object_weight = 30.0
 
 [node name="VictoryZone" parent="." instance=ExtResource("17_hppdt")]
 position = Vector2(1963.172, -383.56696)
+
+[node name="ZonaMuerte" parent="." instance=ExtResource("21_27nup")]
+position = Vector2(803.5362, 38.69815)
+script = ExtResource("23_r6gbd")

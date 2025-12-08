@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3 uid="uid://org4qejvt4n6"]
+
+[ext_resource type="Script" uid="uid://by852vgvy83cw" path="res://menu_fin_tutorial.gd" id="1_52cxj"]
+[ext_resource type="FontFile" uid="uid://cq58o7phqedpy" path="res://Daydream DEMO.otf" id="1_hy2un"]
+[ext_resource type="Texture2D" uid="uid://b46wbs5rxk33m" path="res://assets/Gothic-Castle-Files/PNG/fondo1.jpg" id="2_52cxj"]
+
+[node name="MenuFinTutorial" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = 117.0
+offset_right = -20.0
+offset_bottom = 117.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_52cxj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -296.75
+offset_right = 296.75
+offset_bottom = 366.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="Label2" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hy2un")
+theme_override_font_sizes/font_size = 31
+text = "Tutorial Completado"
+
+[node name="BtnNivel1" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hy2un")
+text = "Jugar Nivel 1"
+
+[node name="BtnMenu" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hy2un")
+text = "Volver al menu"
+
+[node name="BtnSalir" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_hy2un")
+text = "Salir"
+
+[node name="Fondo1" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(500.00003, 152)
+scale = Vector2(0.30023444, 0.29840955)
+texture = ExtResource("2_52cxj")
+
+[connection signal="pressed" from="VBoxContainer/BtnNivel1" to="." method="_on_btn_nivel_1_pressed"]
+[connection signal="pressed" from="VBoxContainer/BtnMenu" to="." method="_on_btn_menu_pressed"]
+[connection signal="pressed" from="VBoxContainer/BtnSalir" to="." method="_on_btn_salir_pressed"]

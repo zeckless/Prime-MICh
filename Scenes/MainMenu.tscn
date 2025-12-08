@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://chfs6xd1wnc0" path="res://Scripts/main_menu.gd" id="1_tt5f1"]
 [ext_resource type="FontFile" uid="uid://cq58o7phqedpy" path="res://Daydream DEMO.otf" id="2_8saeu"]
-[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="2_853f1"]
+[ext_resource type="Texture2D" uid="uid://dieqlio3pqsgs" path="res://assets/Midnight Forest/Midnight Forest/environment/background/background-layer-3.png" id="2_853f1"]
 [ext_resource type="Texture2D" uid="uid://b46wbs5rxk33m" path="res://assets/Gothic-Castle-Files/PNG/fondo1.jpg" id="4_ghw46"]
 
 [node name="MainMenu" type="Control"]
@@ -40,6 +40,11 @@ theme_override_fonts/font = ExtResource("2_8saeu")
 theme_override_font_sizes/font_size = 16
 text = "Jugar"
 
+[node name="Tutorial" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_8saeu")
+text = "tutorial"
+
 [node name="Button2" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_8saeu")
@@ -64,5 +69,6 @@ scale = Vector2(0.30023444, 0.29840955)
 texture = ExtResource("4_ghw46")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/Tutorial" to="." method="_on_tutorial_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button3" to="." method="_on_button_3_pressed"]

@@ -11,3 +11,6 @@ func _on_button_2_pressed():
 func _on_button_3_pressed():
 	# Botón Salir
 	get_tree().quit()
+
+func _on_tutorial_pressed():
+	get_tree().change_scene_to_file("res://Scenes/tutorial.tscn")

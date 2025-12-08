@@ -14,7 +14,7 @@ signal weight_changed(value)
 @export var max_weight: float = 100.0
 
 var weight_levels = [37.0, 50.0, 75.0, 100.0]  # Nuevos niveles de peso
-var current_weight_index = 0  # Empezar en 37kg
+var current_weight_index = 1  # Empezar en 50kg
 
 func change_to_next_level():
 	# Verificar si ya estamos en el nivel máximo

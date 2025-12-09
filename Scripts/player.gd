@@ -366,7 +366,15 @@ func update_local_weight():
 	if hudpeso: hudpeso.setup_weight(weight_component)
 
 func detect_nearby_objects():
+	# 1. Si estamos ocupados (empujando/tirando), NO buscamos nada nuevo.
+	# Esto mantiene la selección fija en el objeto actual mientras actúas.
+	if action_target and (is_pushing or is_pulling or is_recoiling or is_dashing):
+		selected_object = action_target
+		return
+
 	nearby_objects.clear()
+	
+	# 2. Radar alrededor del JUGADOR
 	var space_state = get_world_2d().direct_space_state
 	var query = PhysicsShapeQueryParameters2D.new()
 	var circle = CircleShape2D.new()
@@ -374,15 +382,27 @@ func detect_nearby_objects():
 	query.shape = circle
 	query.transform = global_transform
 	query.collision_mask = 1 
+	
 	var results = space_state.intersect_shape(query)
-	var closest_dist = INF
+	
 	selected_object = null
+	var closest_distance_to_mouse = INF 
+	var mouse_pos = get_global_mouse_position()
+	
 	for result in results:
 		var body = result["collider"]
+		
 		if body.is_in_group("interactable") and body != self:
-			var dist = global_position.distance_to(body.global_position)
-			if dist < closest_dist:
-				closest_dist = dist
+			# Calculamos distancia al mouse para saber cuál prefiere el jugador
+			var dist_mouse = body.global_position.distance_to(mouse_pos)
+			
+			# --- CAMBIO AQUÍ: ---
+			# Quitamos el "if dist_mouse < 150.0".
+			# Si el objeto ya está cerca del jugador (lo sabemos por el radar),
+			# simplemente elegimos el que el mouse señale mejor, sin ser estrictos.
+			
+			if dist_mouse < closest_distance_to_mouse:
+				closest_distance_to_mouse = dist_mouse
 				selected_object = body
 
 func handle_collisions():

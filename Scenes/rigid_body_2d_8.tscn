@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://snpv78kym81g"]
+
+[ext_resource type="Script" uid="uid://dameu6o831dhp" path="res://Scripts/rigid_body_2d_8.gd" id="1_ieehd"]
+
+[node name="RigidBody2D8" type="RigidBody2D"]
+scale = Vector2(1.0000001, 1)
+script = ExtResource("1_ieehd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

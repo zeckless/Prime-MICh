@@ -7,6 +7,7 @@
 size = Vector2(26, 26)
 
 [node name="RigidBody2D" type="RigidBody2D"]
+can_sleep = false
 script = ExtResource("1_af1u0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

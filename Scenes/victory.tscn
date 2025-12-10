@@ -41,11 +41,11 @@ theme_override_font_sizes/font_size = 64
 text = "Victoria"
 horizontal_alignment = 1
 
-[node name="NextLevelButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="CreditsButton" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_pyhgl")
-text = "Siguiente Nivel"
+text = "Creditos"
 
 [node name="MenuButton" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 50)

@@ -1059,28 +1059,24 @@ shape = SubResource("RectangleShape2D_on4kn")
 position = Vector2(325, 207)
 
 [node name="CollisionShape2D" parent="enemy/ZonaActivacion" index="0"]
-visible = false
 position = Vector2(1, -54)
 
 [node name="enemy2" parent="." instance=ExtResource("10_8va2t")]
 position = Vector2(569, 207)
 
 [node name="CollisionShape2D" parent="enemy2/ZonaActivacion" index="0"]
-visible = false
 position = Vector2(0, -54)
 
 [node name="enemy3" parent="." instance=ExtResource("10_8va2t")]
 position = Vector2(820, 207)
 
 [node name="CollisionShape2D" parent="enemy3/ZonaActivacion" index="0"]
-visible = false
 position = Vector2(-0.5, -54.5)
 
 [node name="enemy5" parent="." instance=ExtResource("10_8va2t")]
 position = Vector2(1155, 47)
 
 [node name="CollisionShape2D" parent="enemy5/ZonaActivacion" index="0"]
-visible = false
 position = Vector2(1, -54)
 
 [node name="enemy6" parent="." instance=ExtResource("10_8va2t")]
@@ -1093,14 +1089,12 @@ position = Vector2(-893, 1)
 position = Vector2(-893, 2)
 
 [node name="CollisionShape2D" parent="enemy6/ZonaActivacion" index="0"]
-visible = false
 position = Vector2(-893, -55)
 
 [node name="enemy4" parent="." instance=ExtResource("10_8va2t")]
 position = Vector2(74, 208)
 
 [node name="CollisionShape2D" parent="enemy4/ZonaActivacion" index="0"]
-visible = false
 position = Vector2(0, -55)
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
@@ -1182,6 +1176,21 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.1, 0.1)
 text = "Atrae o empuja la caja para poder pasar."
+label_settings = SubResource("LabelSettings_8mnmb")
+
+[node name="Label14" type="Label" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 940.0
+offset_top = -19.0
+offset_right = 2192.0
+offset_bottom = 161.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.1, 0.1)
+text = "cuando veas una puerta abierta
+en el mapa, será un checkpoint."
 label_settings = SubResource("LabelSettings_8mnmb")
 
 [node name="Label12" type="Label" parent="."]

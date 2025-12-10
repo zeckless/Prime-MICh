@@ -59,6 +59,9 @@ var weight_component = null
 func _ready():
 	add_to_group("player")
 	
+	if GameManager.ultimo_checkpoint_pos != Vector2.ZERO:
+		global_position = GameManager.ultimo_checkpoint_pos
+		
 	anim_sprite = get_node_or_null("AnimatedSprite2D")
 	line_2d = get_node_or_null("Line2D")
 	hud = get_node_or_null("HUD")
@@ -276,9 +279,6 @@ func _input(event):
 func start_pull_or_dash():
 	if is_pushing or not is_instance_valid(selected_object): return
 
-	if last_action_used == "pull":
-		print("🚫 ¡Alterna! Usa Click Derecho")
-		return
 	
 	var obj_weight = selected_object.get_weight() if selected_object.has_method("get_weight") else 50.0
 	action_target = selected_object
@@ -286,33 +286,26 @@ func start_pull_or_dash():
 	if current_weight > obj_weight:
 		if is_on_floor():
 			is_pulling = true
-			last_action_used = "pull" 
 		else:
 			print("⚠️ Solo en suelo")
 	else:
 		is_dashing = true
 		current_dash_timer = 0.0 
 		if anim_sprite: anim_sprite.play("dash")
-		last_action_used = "pull" 
 
 func start_push():
 	if is_pulling or is_dashing or is_recoiling or not is_instance_valid(selected_object): return
 	
-	if last_action_used == "push":
-		print("🚫 ¡Alterna! Usa Click Izquierdo")
-		return
 
 	var obj_weight = selected_object.get_weight() if selected_object.has_method("get_weight") else 50.0
 	action_target = selected_object
 	
 	if current_weight <= obj_weight: 
 		start_recoil() 
-		last_action_used = "push" 
 		return
 
 	if is_on_floor():
 		is_pushing = true
-		last_action_used = "push"
 	else:
 		action_target = null 
 

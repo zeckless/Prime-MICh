@@ -1,14 +1,11 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://clrtgb5s1nf4u"]
 
-[ext_resource type="Script" path="res://Scripts/victory_zone.gd" id="1_1"]
+[ext_resource type="Script" uid="uid://mp8u0ulxddvk" path="res://Scripts/victory_zone.gd" id="1_1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 64)
 
 [node name="VictoryZone" type="Area2D"]
-collision_layer = 1
-collision_mask = 1
-monitorable = true
 script = ExtResource("1_1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -26,5 +23,4 @@ offset_left = -48.0
 offset_top = -48.0
 offset_right = 48.0
 offset_bottom = -33.0
-text = "Meta"
 horizontal_alignment = 1

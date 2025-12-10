@@ -1007,7 +1007,7 @@ scale = Vector2(1.0440896, 1.1070733)
 
 [node name="Camera2D" type="Camera2D" parent="player"]
 position = Vector2(9.536743e-07, -26.195177)
-zoom = Vector2(2.5, 2.5)
+zoom = Vector2(2, 2)
 
 [node name="RigidBody2D5" parent="." instance=ExtResource("5_on4kn")]
 position = Vector2(399, 307)
@@ -1071,9 +1071,6 @@ position = Vector2(0, -54)
 
 [node name="enemy3" parent="." instance=ExtResource("10_8va2t")]
 position = Vector2(820, 207)
-
-[node name="CollisionShape2D" parent="enemy3" index="2"]
-visible = false
 
 [node name="CollisionShape2D" parent="enemy3/ZonaActivacion" index="0"]
 visible = false

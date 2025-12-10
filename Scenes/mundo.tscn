@@ -3762,7 +3762,7 @@ scale = Vector2(1.0440896, 1.1070733)
 
 [node name="Camera2D" type="Camera2D" parent="player"]
 position = Vector2(3.4213066e-05, -27.75867)
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2, 2)
 
 [node name="enemy" parent="." instance=ExtResource("7_i8avv")]
 position = Vector2(1681.0671, -401.77783)

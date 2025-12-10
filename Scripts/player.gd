@@ -12,22 +12,24 @@ const DASH_SPEED = 350.0
 const DASH_STOP_DISTANCE = 25.0 
 const MIN_DASH_TIME = 0.5 
 
-# --- CONFIGURACIÓN DEL REBOTE (MODO VUELO - AJUSTADO) ---
-const RECOIL_SPEED = 280.0   # (Antes 300) Un pelín más lento
-const RECOIL_JUMP = -200.0   # (Antes -220) Salto un poco más controlado
+# --- CONFIGURACIÓN DEL REBOTE ---
+const RECOIL_SPEED = 280.0   
+const RECOIL_JUMP = -200.0   
 const RECOIL_DURATION = 0.4  
-const RECOIL_DRAG = 3.0      # (Antes 2.0) Un poco más de resistencia al aire
-const RECOIL_GRAVITY = 0.45  # (Antes 0.3) Un poco más de gravedad para no flotar tanto
+const RECOIL_DRAG = 3.0      
+const RECOIL_GRAVITY = 0.45  
 
 # --- SISTEMA DE PESO ---
-var current_weight = 50.0  # <--- CAMBIO: Valor inicial 50
+var current_weight = 50.0 
 var weight_levels = [37.0, 50.0, 75.0, 100.0]
-var current_weight_index = 1 # <--- CAMBIO: Ahora empieza en el índice 1 (50kg)
+var current_weight_index = 1
 var max_weight = 100.0
 
-# --- INTERACCIÓN ---
-var detection_radius = 200.0 
-var nearby_objects = []
+# --- INTERACCIÓN Y PUNTERÍA ---
+# CAMBIO AQUÍ: Aumentado de 350.0 a 450.0
+var detection_radius = 325.0 
+const MOUSE_AIM_RADIUS = 60.0 
+
 var selected_object = null
 
 # --- ESTADOS ---
@@ -41,19 +43,30 @@ var action_target = null
 var current_dash_timer = 0.0 
 var current_recoil_timer = 0.0 
 
+# --- ALTERNANCIA ---
+var last_action_used = "" 
+
 # --- REFERENCIAS ---
-@onready var anim_sprite = $AnimatedSprite2D 
-@onready var line_2d = $Line2D 
+var anim_sprite = null
+var line_2d = null
+var hud = null
+var hudpeso = null
+var health_component = null
+var weight_component = null
+
 @onready var pause_menu_scene = preload("res://Scenes/pausa_menu.tscn")
-@onready var hud: CanvasLayer = $HUD
-@onready var hudpeso: CanvasLayer = $HUDpeso
-@onready var health_component = $HealthComponent
-@onready var weight_component = $WeightComponent
 
 func _ready():
 	add_to_group("player")
+	
+	anim_sprite = get_node_or_null("AnimatedSprite2D")
+	line_2d = get_node_or_null("Line2D")
+	hud = get_node_or_null("HUD")
+	hudpeso = get_node_or_null("HUDpeso")
+	health_component = get_node_or_null("HealthComponent")
+	weight_component = get_node_or_null("WeightComponent")
+	
 	setup_components()
-	if not anim_sprite: print("🔴 ERROR: Falta AnimatedSprite2D")
 
 func setup_components():
 	if hud and health_component:
@@ -64,8 +77,6 @@ func setup_components():
 		weight_component.weight = weight_levels[current_weight_index]
 		current_weight = weight_component.weight
 		if hudpeso: hudpeso.setup_weight(weight_component)
-	else:
-		current_weight = weight_levels[current_weight_index]
 
 func _process(_delta):
 	if not is_dead:
@@ -75,57 +86,87 @@ func _process(_delta):
 func _physics_process(delta):
 	if is_dead: return
 
-	# 1. REBOTE 
+	# 1. ESTADOS
 	if is_recoiling:
 		process_recoil_physics(delta)
 		move_and_slide()
 		return 
 
-	# 2. DASH
 	if is_dashing:
 		process_dash_physics(delta)
 		move_and_slide()
 		return 
 
-	# 3. FÍSICA OBJETOS
+	# 2. FÍSICA OBJETOS
 	if is_instance_valid(action_target):
 		if is_pulling:
 			process_object_pull(delta)
 		elif is_pushing:
 			process_object_push(delta)
 
-	# 4. MOVIMIENTO JUGADOR
-	detect_nearby_objects()
+	# 3. LÓGICA GENERAL
+	detect_nearby_objects_improved()
 	apply_gravity()
 	handle_movement_input() 
 	
 	move_and_slide()
 	handle_collisions()
 	
-	# 5. ANIMACIONES Y VISUALES
+	# 4. FEEDBACK
 	update_animations()
 	update_visual_feedback()
 
 # ================================================================
-# LÓGICA DE REBOTE (AJUSTADA)
+# SISTEMA DE DETECCIÓN "MOUSE GORDO" (AIM ASSIST)
+# ================================================================
+func detect_nearby_objects_improved():
+	if action_target and (is_pushing or is_pulling or is_recoiling or is_dashing):
+		selected_object = action_target
+		return
+
+	var space_state = get_world_2d().direct_space_state
+	var mouse_pos = get_global_mouse_position()
+	
+	var query = PhysicsShapeQueryParameters2D.new()
+	var circle_shape = CircleShape2D.new()
+	circle_shape.radius = MOUSE_AIM_RADIUS 
+	
+	query.shape = circle_shape
+	query.transform = Transform2D(0, mouse_pos)
+	query.collision_mask = 1 
+	
+	var results = space_state.intersect_shape(query)
+	
+	var best_candidate = null
+	var closest_dist_to_mouse = INF
+	
+	for result in results:
+		var body = result["collider"]
+		
+		if is_instance_valid(body) and body != self and body.is_in_group("interactable"):
+			
+			var dist_player_to_obj = global_position.distance_to(body.global_position)
+			
+			if dist_player_to_obj <= detection_radius:
+				
+				var dist_mouse_to_obj = mouse_pos.distance_to(body.global_position)
+				
+				if dist_mouse_to_obj < closest_dist_to_mouse:
+					closest_dist_to_mouse = dist_mouse_to_obj
+					best_candidate = body
+	
+	selected_object = best_candidate
+
+# ================================================================
+# FÍSICAS DE ESTADOS
 # ================================================================
 func process_recoil_physics(delta):
 	current_recoil_timer += delta
-	
-	# Gravedad reducida (pero no tanto como antes)
 	velocity.y += (GRAVITY * RECOIL_GRAVITY) * delta * 50.0 
-	
-	# Fricción para frenar el vuelo
 	velocity.x = lerp(velocity.x, 0.0, RECOIL_DRAG * delta)
-	
 	if current_recoil_timer > RECOIL_DURATION:
 		stop_all_interactions()
-		# Dejamos algo de inercia, pero ya está más frenada por el Drag
-		print("✅ Rebote terminado")
 
-# ================================================================
-# LÓGICA DE DASH
-# ================================================================
 func process_dash_physics(delta):
 	if not is_instance_valid(action_target):
 		stop_all_interactions()
@@ -141,17 +182,12 @@ func process_dash_physics(delta):
 		velocity = Vector2.ZERO
 		stop_all_interactions()
 
-# ================================================================
-# FÍSICA DE OBJETOS
-# ================================================================
-
 func process_object_pull(_delta):
 	var dist = global_position.distance_to(action_target.global_position)
 	if dist < 30:
 		action_target.linear_velocity = Vector2.ZERO
 		stop_all_interactions()
 		return
-	
 	var dir = (global_position - action_target.global_position).normalized()
 	if action_target is RigidBody2D:
 		action_target.sleeping = false 
@@ -164,9 +200,8 @@ func process_object_push(_delta):
 		action_target.linear_velocity = Vector2(target_vel_x, action_target.linear_velocity.y)
 
 # ================================================================
-# MOVIMIENTO DEL JUGADOR
+# MOVIMIENTO Y ANIMACIÓN
 # ================================================================
-
 func apply_gravity():
 	var weight_gravity_modifier = 0.5 + (current_weight / 100.0)
 	velocity.y += GRAVITY * weight_gravity_modifier
@@ -174,7 +209,6 @@ func apply_gravity():
 func handle_movement_input():
 	var speed_to_use = RUN_SPEED
 	var max_speed_to_use = RUN_MAX_SPEED
-	
 	if is_pushing:
 		speed_to_use = PUSHING_SPEED
 		max_speed_to_use = PUSHING_SPEED
@@ -201,38 +235,24 @@ func handle_movement_input():
 	if anim_sprite and not is_dashing and not is_recoiling:
 		anim_sprite.flip_h = not facing_right
 
-# ================================================================
-# ANIMACIONES
-# ================================================================
 func update_animations():
+	if not anim_sprite: return
 	if is_dashing: return
 	if is_recoiling: return 
 
 	var anim = "idle" 
-	if is_dead:
-		anim = "death"
-	elif not is_on_floor():
-		anim = "jump"
-	elif is_pushing:
-		anim = "push"
-	elif is_pulling:
-		anim = "pull"
-	elif abs(velocity.x) > 5:
-		anim = "run"
-	else:
-		anim = "idle"
+	if is_dead: anim = "death"
+	elif not is_on_floor(): anim = "jump"
+	elif is_pushing: anim = "push"
+	elif is_pulling: anim = "pull"
+	elif abs(velocity.x) > 5: anim = "run"
 	
-	play_anim(anim)
-
-func play_anim(anim_name):
-	if anim_sprite and anim_sprite.sprite_frames.has_animation(anim_name):
-		if anim_sprite.animation != anim_name:
-			anim_sprite.play(anim_name)
+	if anim_sprite.sprite_frames.has_animation(anim):
+		if anim_sprite.animation != anim: anim_sprite.play(anim)
 
 # ================================================================
-# INPUTS (MOUSE)
+# INPUTS (CON ALTERNANCIA)
 # ================================================================
-
 func _input(event):
 	if is_dead: return 
 	
@@ -241,13 +261,13 @@ func _input(event):
 		get_tree().current_scene.add_child(pause_menu)
 		get_tree().paused = true
 
-	# CLICK IZQUIERDO: PULL / DASH
+	# CLICK IZQUIERDO: PULL
 	if event.is_action_pressed("pull"):
 		start_pull_or_dash()
 	elif event.is_action_released("pull"):
 		stop_all_interactions()
 	
-	# CLICK DERECHO: PUSH / REBOTE
+	# CLICK DERECHO: PUSH
 	if event.is_action_pressed("push"):
 		start_push()
 	elif event.is_action_released("push"):
@@ -255,6 +275,10 @@ func _input(event):
 
 func start_pull_or_dash():
 	if is_pushing or not is_instance_valid(selected_object): return
+
+	if last_action_used == "pull":
+		print("🚫 ¡Alterna! Usa Click Derecho")
+		return
 	
 	var obj_weight = selected_object.get_weight() if selected_object.has_method("get_weight") else 50.0
 	action_target = selected_object
@@ -262,41 +286,44 @@ func start_pull_or_dash():
 	if current_weight > obj_weight:
 		if is_on_floor():
 			is_pulling = true
+			last_action_used = "pull" 
 		else:
 			print("⚠️ Solo en suelo")
 	else:
 		is_dashing = true
 		current_dash_timer = 0.0 
-		play_anim("dash")
+		if anim_sprite: anim_sprite.play("dash")
+		last_action_used = "pull" 
 
 func start_push():
 	if is_pulling or is_dashing or is_recoiling or not is_instance_valid(selected_object): return
 	
+	if last_action_used == "push":
+		print("🚫 ¡Alterna! Usa Click Izquierdo")
+		return
+
 	var obj_weight = selected_object.get_weight() if selected_object.has_method("get_weight") else 50.0
 	action_target = selected_object
 	
-	# REBOTE
 	if current_weight <= obj_weight: 
 		start_recoil() 
+		last_action_used = "push" 
 		return
 
-	# EMPUJE
 	if is_on_floor():
 		is_pushing = true
+		last_action_used = "push"
 	else:
-		print("⚠️ No puedes empujar en el aire")
 		action_target = null 
 
 func start_recoil():
 	is_recoiling = true
 	current_recoil_timer = 0.0
-	
 	var direction_to_obj = (action_target.global_position - global_position).normalized()
 	var recoil_dir = -direction_to_obj.x 
 	if recoil_dir == 0: recoil_dir = -1.0 if facing_right else 1.0
-	
 	velocity = Vector2(sign(recoil_dir) * RECOIL_SPEED, RECOIL_JUMP)
-	anim_sprite.play("airspin") 
+	if anim_sprite: anim_sprite.play("airspin") 
 
 func stop_all_interactions():
 	is_pulling = false
@@ -308,9 +335,8 @@ func stop_all_interactions():
 	current_recoil_timer = 0.0
 
 # ================================================================
-# VISUALES
+# FEEDBACK VISUAL
 # ================================================================
-
 func update_visual_feedback():
 	if not line_2d: return
 	if not is_instance_valid(selected_object):
@@ -323,27 +349,25 @@ func update_visual_feedback():
 	line_2d.add_point(to_local(selected_object.global_position))
 	
 	var obj_weight = selected_object.get_weight() if selected_object.has_method("get_weight") else 50.0
-	
 	var col_pull = Color.GREEN_YELLOW 
 	var col_dash = Color.CYAN         
 	var col_push = Color.ORANGE       
 	var col_fail = Color.RED          
+	var col_LOCKED = Color(0.5, 0.5, 0.5, 0.4) 
 	
 	if current_weight > obj_weight:
 		line_2d.default_color = col_pull
 		line_2d.width = 1.0 
+		if last_action_used == "pull": line_2d.default_color = col_LOCKED
 	else:
 		line_2d.default_color = col_dash
 		line_2d.width = 2.0 
+		if last_action_used == "pull": line_2d.default_color = col_LOCKED
 	
-	if is_pushing:
-		line_2d.default_color = col_push
-	elif is_recoiling:
-		line_2d.default_color = col_fail
+	if is_pushing: line_2d.default_color = col_push
+	elif is_recoiling: line_2d.default_color = col_fail
 
-# ... (El resto de funciones auxiliares change_weight_level, handle_collisions, etc.)
-# CÓPIALAS DEL SCRIPT ANTERIOR SI LAS TIENES SEPARADAS O MANTENLAS COMO ESTABAN.
-# (Asegúrate de no dejarlas fuera)
+# --- UTILIDADES ---
 func change_weight_level():
 	if weight_component:
 		weight_component.change_to_next_level()
@@ -364,46 +388,6 @@ func update_local_weight():
 	current_weight = weight_component.weight
 	current_weight_index = weight_component.current_weight_index
 	if hudpeso: hudpeso.setup_weight(weight_component)
-
-func detect_nearby_objects():
-	# 1. Si estamos ocupados (empujando/tirando), NO buscamos nada nuevo.
-	# Esto mantiene la selección fija en el objeto actual mientras actúas.
-	if action_target and (is_pushing or is_pulling or is_recoiling or is_dashing):
-		selected_object = action_target
-		return
-
-	nearby_objects.clear()
-	
-	# 2. Radar alrededor del JUGADOR
-	var space_state = get_world_2d().direct_space_state
-	var query = PhysicsShapeQueryParameters2D.new()
-	var circle = CircleShape2D.new()
-	circle.radius = detection_radius
-	query.shape = circle
-	query.transform = global_transform
-	query.collision_mask = 1 
-	
-	var results = space_state.intersect_shape(query)
-	
-	selected_object = null
-	var closest_distance_to_mouse = INF 
-	var mouse_pos = get_global_mouse_position()
-	
-	for result in results:
-		var body = result["collider"]
-		
-		if body.is_in_group("interactable") and body != self:
-			# Calculamos distancia al mouse para saber cuál prefiere el jugador
-			var dist_mouse = body.global_position.distance_to(mouse_pos)
-			
-			# --- CAMBIO AQUÍ: ---
-			# Quitamos el "if dist_mouse < 150.0".
-			# Si el objeto ya está cerca del jugador (lo sabemos por el radar),
-			# simplemente elegimos el que el mouse señale mejor, sin ser estrictos.
-			
-			if dist_mouse < closest_distance_to_mouse:
-				closest_distance_to_mouse = dist_mouse
-				selected_object = body
 
 func handle_collisions():
 	for i in get_slide_collision_count():
@@ -429,6 +413,6 @@ func _on_died():
 	is_dead = true
 	velocity = Vector2.ZERO
 	if has_node("deathsound"): $deathsound.play()
-	play_anim("death")
+	if anim_sprite: anim_sprite.play("death")
 	await get_tree().create_timer(1.0).timeout
 	get_tree().call_deferred("reload_current_scene")
